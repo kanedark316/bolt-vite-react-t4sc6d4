@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import { BarChart3, TrendingUp, Heart, Star } from 'lucide-react';
-import { getAnalytics } from '../../api/admin';
+import adminAPI from '../../api/admin';
 
 const AdminDashboardPage = () => {
   const [analytics, setAnalytics] = useState({
@@ -14,7 +14,7 @@ const AdminDashboardPage = () => {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const data = await getAnalytics();
+        const data = await adminAPI.getAnalytics();
         setAnalytics(data);
       } catch (error) {
         console.error('Failed to fetch analytics:', error);
@@ -86,9 +86,9 @@ const AdminDashboardPage = () => {
             </div>
             <div className="space-y-4">
               {analytics.highestRated.map((item: any) => (
-                <div key={item.id} className="flex justify-between items-center">
+ <div key={item.id} className="flex justify-between items-center">
                   <span className="text-gray-300">{item.title}</span>
-                  <span className="text-gray-400">★ {item.rating}</span>
+                  <span className="text-gray-400">â˜… {item.rating}</span>
                 </div>
               ))}
             </div>
