@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import { Upload, Save, Edit } from 'lucide-react';
-import { addContent, uploadToS3 } from '../../api/admin';
+import adminAPI from '../../api/admin';
 
 const AddContentPage = () => {
   const [contentType, setContentType] = useState('movie');
@@ -56,11 +56,11 @@ const AddContentPage = () => {
       let s3Url = '';
       if (file) {
         // Upload to appropriate S3 bucket based on content type
-        s3Url = await uploadToS3(file, contentType);
+        s3Url = await adminAPI.uploadToS3(file, contentType);
       }
 
       // Add content to database
-      await addContent({
+      await adminAPI.addContent({
         ...formData,
         type: contentType,
         fileUrl: s3Url
@@ -211,45 +211,25 @@ const AddContentPage = () => {
           </div>
 
           {/* File Upload */}
-          <div className="bg-gray-800 p-6 rounded-lg">
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Upload Content
+          <div className="bg-gray-800 p-6 rounded-lg"> <label className="block text-sm font-medium text-gray-300 mb-2">
+              File
             </label>
-            <div className="flex items-center space-x-4">
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="text-gray-300"
-                accept={contentType === 'movie' ? 'video/*' : undefined}
-              />
-              {file && (
-                <span className="text-green-500 flex items-center">
-                  <Upload className="h-4 w-4 mr-1" />
-                  File selected
-                </span>
-              )}
-            </div>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="w-full rounded-md bg-gray-700 border-gray-600 text-white"
+              required
+            />
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex justify-end space-x-4">
-            <button
-              type="button"
-              onClick={() => setIsEditing(!isEditing)}
-              className="px-4 py-2 rounded-md bg-gray-700 text-gray-300 hover:bg-gray-600 flex items-center"
-            >
-              <Edit className="h-4 w-4 mr-2" />
-              {isEditing ? 'Cancel Edit' : 'Edit'}
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 flex items-center"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              {loading ? 'Saving...' : 'Save'}
-            </button>
-          </div>
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full rounded-md bg-indigo-600 text-white py-2 px-4"
+            disabled={loading}
+          >
+            {loading ? 'Loading...' : 'Add Content'}
+          </button>
         </form>
       </div>
     </AdminLayout>
